@@ -6,18 +6,15 @@ import streamlit as st
 from tratamento import carregar_dados
 
 
-# CONFIGURAÇÃO DA PÁGINA
 st.set_page_config(
     page_title="Vendas de Videogames",
     layout="wide"
 )
 
-# CARREGAMENTO DOS DADOS
 df = carregar_dados()
 
 COR_PRINCIPAL = "#FF4B4B"
 
-# APRESENTAÇÃO DO PROJETO
 st.title("Vendas de Videogames pelo Mundo")
 
 st.markdown(
@@ -40,7 +37,6 @@ st.markdown(
     """
 )
 
-# FILTROS INTERATIVOS
 st.sidebar.header("Filtros (Clique para filtrar)")
 
 generos = sorted(df["Genre"].dropna().unique())
@@ -85,7 +81,6 @@ regiao = st.sidebar.selectbox(
 
 nome_regiao = nomes_regioes[regiao]
 
-# APLICAÇÃO DOS FILTROS
 df_f = df.copy()
 
 if generos_sel:
@@ -98,7 +93,6 @@ if plataformas_sel:
         df_f["Platform"].isin(plataformas_sel)
     ]
 
-# O período selecionado filtra os registros com ano conhecido.
 df_f = df_f[
     df_f["Year"].between(ano_sel[0], ano_sel[1])
 ].copy()
@@ -110,7 +104,6 @@ if df_f.empty:
     )
     st.stop()
 
-# INDICADORES ATUALIZADOS
 st.subheader("Indicadores dos Dados Selecionados")
 
 c1, c2, c3, c4 = st.columns(4)
@@ -148,10 +141,8 @@ st.info(
     "no conjunto de dados, não vendas atuais."
 )
 
-# ETAPA 3 - ANÁLISE EXPLORATÓRIA
 st.subheader("Etapa 3 — Análise Exploratória e Gráficos")
 
-# GRÁFICO 1 - VENDAS POR GÊNERO
 st.header("1. Vendas por gênero")
 
 g = (
@@ -187,7 +178,6 @@ st.write(
     f"milhões de unidades**."
 )
 
-# GRÁFICO 2 - VENDAS POR PLATAFORMA
 st.header("2. Vendas por plataforma")
 
 p = (
@@ -222,7 +212,6 @@ st.write(
     f"milhões de unidades**."
 )
 
-# GRÁFICO 3 - JOGOS MAIS VENDIDOS
 st.header("3. Jogos mais vendidos")
 
 j = (
@@ -267,7 +256,6 @@ st.caption(
     "suas vendas são somadas para esta comparação."
 )
 
-# GRÁFICO 4 - VENDAS AO LONGO DOS ANOS
 st.header("4. Vendas ao longo dos anos")
 
 a = (
@@ -310,7 +298,6 @@ st.caption(
     "real das vendas de todo o mercado."
 )
 
-# GRÁFICO 5 - DIFERENÇAS ENTRE REGIÕES
 st.header("5. Diferenças entre regiões")
 
 regioes = [
@@ -357,7 +344,6 @@ st.write(
     f"do total regional registrado."
 )
 
-# GRÁFICO 6 - GÊNEROS POR REGIÃO
 st.header("6. Gêneros em destaque por região")
 
 gr = (
@@ -395,10 +381,8 @@ st.write(
     f"de unidades**."
 )
 
-# ETAPA 4 - ANÁLISES COMPLEMENTARES
 st.subheader("Etapa 4 — Análises Complementares")
 
-# GRÁFICO 7 - DISTRIBUIÇÃO DAS VENDAS
 st.header("7. Distribuição das vendas")
 
 lim = df_f["Global_Sales"].quantile(0.95)
@@ -454,7 +438,6 @@ st.caption(
     "nas métricas e nas demais análises."
 )
 
-# GRÁFICO 8 - CORRELAÇÃO ENTRE REGIÕES
 st.header("8. Relação entre regiões")
 
 corr = df_f[regioes].corr()
@@ -496,7 +479,6 @@ st.caption(
     "Correlação não significa causalidade."
 )
 
-# CONSIDERAÇÕES FINAIS
 st.header("Considerações finais")
 
 st.write(
