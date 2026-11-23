@@ -19,7 +19,7 @@ st.markdown(
     """
 )
 
-st.subheader("Indicadores gerais")
+st.subheader("Indicadores Gerais")
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Jogos", len(df))
 c2.metric("Vendas globais (mi)", round(df["Global_Sales"].sum(), 1))
@@ -27,10 +27,8 @@ c3.metric("Plataformas", df["Platform"].nunique())
 c4.metric("Gêneros", df["Genre"].nunique())
 
 st.sidebar.header("Filtros (Clique para filtrar)")
-
 generos = sorted(df["Genre"].dropna().unique())
 plataformas = sorted(df["Platform"].dropna().unique())
-
 generos_sel = st.sidebar.multiselect("Gêneros", generos, default=[], placeholder="Todos os gêneros")
 plataformas_sel = st.sidebar.multiselect("Plataformas", plataformas, default=[], placeholder="Todas as plataformas")
 
@@ -72,6 +70,8 @@ if df_f.empty:
 st.caption(f"Registros filtrados: {len(df_f)} | Vendas: {round(df_f['Global_Sales'].sum(), 1)} mi")
 
 COR_PRINCIPAL = "#FF4B4B"
+
+st.subheader("Etapa 3 — Análise Exploratória e Gráficos")
 
 st.header("1. Vendas por gênero")
 g = df_f.groupby("Genre")["Global_Sales"].sum().sort_values(ascending=False).reset_index()
@@ -123,20 +123,15 @@ fig.update_layout(xaxis_tickangle=-35)
 st.plotly_chart(fig, use_container_width=True)
 st.write(f"Em {nome_regiao}, o ranking de gêneros pode diferir do global. No Japão, RPG tem peso muito maior.")
 
+st.subheader("Etapa 4 — Análises Complementares")
+
 st.header("6. Distribuição das vendas")
-ca, cb = st.columns(2)
-with ca:
-    lim = df_f["Global_Sales"].quantile(0.95)
-    fig = px.histogram(df_f[df_f["Global_Sales"] <= lim], x="Global_Sales", nbins=40,
-                       labels={"Global_Sales": "Vendas globais (mi)"},
-                       title="Histograma até o percentil 95", color_discrete_sequence=[COR_PRINCIPAL])
-    st.plotly_chart(fig, use_container_width=True)
-with cb:
-    fig = px.box(df_f, y="Global_Sales", log_y=True,
-                 labels={"Global_Sales": "Vendas globais (mi, log)"},
-                 title="Boxplot em escala log", color_discrete_sequence=[COR_PRINCIPAL])
-    st.plotly_chart(fig, use_container_width=True)
-st.write("As vendas são muito assimétricas: a maioria vende pouco e poucos jogos concentram grande parte do total.")
+lim = df_f["Global_Sales"].quantile(0.95)
+fig = px.histogram(df_f[df_f["Global_Sales"] <= lim], x="Global_Sales", nbins=40,
+                   labels={"Global_Sales": "Vendas globais (mi)"},
+                   title="Histograma de vendas (até o percentil 95)", color_discrete_sequence=[COR_PRINCIPAL])
+st.plotly_chart(fig, use_container_width=True)
+st.write("As vendas são muito assimétricas: a maioria dos jogos vende pouco e poucos concentram grande parte do total.")
 
 st.header("7. Relação entre regiões")
 corr = df_f[regioes].corr()
@@ -145,6 +140,3 @@ fig = px.imshow(corr, text_auto=".2f", x=nomes, y=nomes,
                 title="Correlação entre vendas regionais")
 st.plotly_chart(fig, use_container_width=True)
 st.write("América do Norte e Europa têm correlação alta; com o Japão a correlação é menor.")
-
-st.divider()
-st.caption("Projeto acadêmico — Análise de Dados e Desenvolvimento de Dashboard Interativo. Fonte: Video Game Sales (Kaggle / VGChartz).")
